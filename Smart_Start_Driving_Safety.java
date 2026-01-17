@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
 
 public class Smart_Start_Driving_Safety {
 
@@ -9,6 +12,7 @@ public class Smart_Start_Driving_Safety {
 
     private JLabel successLabel;
     private JLabel failLabel;
+    private JLabel helpLink;
 
     public Smart_Start_Driving_Safety() {
         frame = new JFrame("Smart Start Helper");
@@ -67,7 +71,6 @@ public class Smart_Start_Driving_Safety {
         label.setFont(new Font("Arial", Font.BOLD, 24));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Camera placeholder
         JLabel cameraView = new JLabel("Camera Feed");
         cameraView.setPreferredSize(new Dimension(400, 200));
         cameraView.setMaximumSize(new Dimension(400, 200));
@@ -88,6 +91,20 @@ public class Smart_Start_Driving_Safety {
         failLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         failLabel.setVisible(false);
 
+        helpLink = new JLabel("<html><a href=''>Help</a></html>");
+        helpLink.setAlignmentX(Component.CENTER_ALIGNMENT);
+        helpLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        helpLink.setFont(new Font("Arial", Font.PLAIN, 12));
+        helpLink.setBorder(BorderFactory.createEmptyBorder(0, 480, 0, 0));
+        helpLink.setVisible(false);
+
+        helpLink.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openLink("https://panagiotisgkyriako.wixsite.com/smartstart-cy");
+            }
+        });
+
         scanButton.addActionListener(e -> simulateScan());
 
         JButton backButton = new JButton("Back");
@@ -105,6 +122,8 @@ public class Smart_Start_Driving_Safety {
         panel.add(Box.createVerticalStrut(15));
         panel.add(successLabel);
         panel.add(failLabel);
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(helpLink);
         panel.add(Box.createVerticalStrut(30));
         panel.add(backButton);
 
@@ -114,6 +133,7 @@ public class Smart_Start_Driving_Safety {
     private void simulateScan() {
         successLabel.setVisible(false);
         failLabel.setVisible(false);
+        helpLink.setVisible(false);
 
         boolean success = Math.random() > 0.5;
 
@@ -121,11 +141,19 @@ public class Smart_Start_Driving_Safety {
             successLabel.setVisible(true);
         } else {
             failLabel.setVisible(true);
-            
+            helpLink.setVisible(true);
         }
 
         frame.revalidate();
         frame.repaint();
+    }
+
+    private void openLink(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Unable to open link");
+        }
     }
 
     public static void main(String[] args) {
